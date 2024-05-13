@@ -5,7 +5,7 @@ end
 
 local function countLeadingWhitespacePerLine(table)
 	local result = {}
-	for _, str in ipairs(table) do
+	for str in table do
 		local pattern = "^%s*"
 		local whitespace = string.match(str, pattern)
 		if whitespace then
