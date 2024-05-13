@@ -1,6 +1,6 @@
-local function buffer_to_string()
+local function bufferToString()
 	local content = vim.api.nvim_buf_get_lines(0, 0, vim.api.nvim_buf_line_count(0), false)
-	return table.concat(content, "\n")
+	return content
 end
 
 local function countLeadingWhitespacePerLine(content)
@@ -13,13 +13,7 @@ local function countLeadingWhitespacePerLine(content)
 	return counts
 end
 
-local function processBufferContent()
-	local bufferContent = buffer_to_string() -- Get the buffer content as a string
-	local lines = {} -- Table to hold the lines from the buffer content
-	for line in string.gmatch(bufferContent, "([^\n]+)") do
-		table.insert(lines, line) -- Add each line to the 'lines' table
-	end
-
+local function getLeadingWhitespaceInBuffer(lines)
 	local whitespaceCounts = countLeadingWhitespacePerLine(lines)
 	for i, count in ipairs(whitespaceCounts) do
 		print("Line " .. i .. ": " .. count .. " leading whitespace characters")
@@ -27,9 +21,9 @@ local function processBufferContent()
 end
 
 local function runner()
-	print("Function running")
 	print(vim.fn.getcwd())
-	processBufferContent()
+	local bufferContent = bufferToString()
+	getLeadingWhitespaceInBuffer(bufferContent)
 end
 
 return {
