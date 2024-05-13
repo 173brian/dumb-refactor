@@ -3,24 +3,26 @@ local function buffer_to_string()
 	return table.concat(content, "\n")
 end
 
-local function countLeadingWhitespacePerLine(table)
-	local result = {}
-	for str in table do
+local function countLeadingWhitespacePerLine(content)
+	local lines = {}
+	for i, str in ipairs(content:gmatch("[^\r\n]+")) do
 		local pattern = "^%s*"
 		local whitespace = string.match(str, pattern)
 		if whitespace then
-			result[str] = #whitespace
+			lines[i] = #whitespace
 		else
-			result[str] = 0
+			lines[i] = 0
 		end
 	end
-	return result
+	return lines
 end
 
 local function runner()
 	print("Function running")
 	print(vim.fn.getcwd())
-	print(countLeadingWhitespacePerLine(buffer_to_string()))
+	local file_buffer = buffer_to_string()
+	local whitespace = countLeadingWhitespacePerLine(file_buffer)
+	print(whitespace)
 end
 
 return {
