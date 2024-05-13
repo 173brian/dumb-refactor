@@ -4,17 +4,13 @@ local function buffer_to_string()
 end
 
 local function countLeadingWhitespacePerLine(content)
-	local lines = {}
-	for i, str in ipairs(content:gmatch("[^\r\n]+")) do
-		local pattern = "^%s*"
-		local whitespace = string.match(str, pattern)
-		if whitespace then
-			lines[i] = #whitespace
-		else
-			lines[i] = 0
-		end
+	local counts = {}
+	for i, line in ipairs(content) do
+		local leadingWhitespace = string.match(line, "^%s*")
+		local count = #leadingWhitespace
+		counts[i] = count
 	end
-	return lines
+	return counts
 end
 
 local function runner()
