@@ -38,7 +38,7 @@ local function getVisualSelection()
 end
 
 local function runner(input)
-	local buf = vim.fn.get
+	local buf = vim.api.nvim_get_current_buf()
 	local bufLineCount = vim.api.nvim_buf_line_count(buf)
 	local bufferContent = vim.api.nvim_buf_get_lines(buf, 0, bufLineCount, false)
 	local whitespaceCounts = getLeadingWhitespacePerLine(bufferContent)
