@@ -38,8 +38,8 @@ local function ui()
 	local height = 10
 	local col = math.floor(vim.o.columns / 2) - width / 2
 	local row = math.floor(vim.o.lines / 2) - height / 2
-
-	local win_id = vim.api.nvim_open_win(vim.api.nvim_create_buf(false, true), true, {
+	local buf_id = vim.api.nvim_create_buf(false, true)
+	local win_id = vim.api.nvim_open_win(buf_id, true, {
 		relative = "editor",
 		width = width,
 		height = height,
@@ -48,8 +48,7 @@ local function ui()
 		style = "minimal",
 	})
 
-	vim.api.nvim_buf_set_lines(win_id, 0, -1, false, { "Enter text: " })
-
+	vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, { "Enter text: " })
 	local input = vim.api.nvim_input(win_id, {
 		enter = true,
 	})
