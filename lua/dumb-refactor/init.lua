@@ -49,10 +49,13 @@ local function ui()
 	})
 
 	vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, { "Enter text: " })
-	local input = vim.api.nvim_input(win_id, {
-		enter = true,
-	})
-	vim.api.nvim_close_win(win_id)
+	local input = vim.api.nvim_input()
+
+	-- Check if the Enter key was pressed
+	if #input > 0 and input[1] == "" then
+		-- The Enter key was pressed, close the window
+		vim.api.nvim_close_win(win_id)
+	end
 	return input
 end
 
