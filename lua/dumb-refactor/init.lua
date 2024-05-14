@@ -8,7 +8,7 @@ local function getLeadingWhitespacePerLine(content)
 	return counts
 end
 
-local function getVisualSelection(lines)
+local function getVisualSelection()
 	local s_start = vim.fn.getpos("'<")
 	local s_end = vim.fn.getpos("'>")
 	local n_lines = math.abs(s_end[2] - s_start[2]) + 1
@@ -16,9 +16,13 @@ local function getVisualSelection(lines)
 		vim.api.nvim_err_writeln("Error: Selection spans multiple lines.")
 		return nil
 	end
-	local line = lines[s_start[2] - 1]
-	local selection = string.sub(line, 1, s_end[3] - s_start[3] + 1)
-	return selection
+	local lines = vim.api.nvim_buf_get_lines(0, s_start[2] - 1, s_end[2], false)
+	lines[1] = string.sub(lines[1], s_start[3], -1)
+	local selection = string.sub(lines[1], 1, s_end[3] - s_start[3] + 1)
+	local lineObj = {}
+	table.insert(lineObj, s_start)
+	table.insert(lineObj, selection)
+	return lineObj
 end
 
 local function runner(input)
@@ -26,9 +30,11 @@ local function runner(input)
 	local bufLineCount = vim.api.nvim_buf_line_count(buf)
 	local bufferContent = vim.api.nvim_buf_get_lines(buf, 0, bufLineCount, false)
 	local whitespaceCounts = getLeadingWhitespacePerLine(bufferContent)
-	local selection = getVisualSelection(bufferContent)
+	local selectionObj = getVisualSelection()
 	print("input: " .. input)
-	if selection ~= nil then
+	if selectionObj ~= nil then
+		local lineNum, selection = table.unpack(selectionObj)
+		print(lineNum)
 		print(selection)
 	else
 		return
