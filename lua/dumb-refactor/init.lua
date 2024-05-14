@@ -18,9 +18,12 @@ local function getVisualSelection()
 	end
 	local lines = vim.api.nvim_buf_get_lines(0, s_start[2] - 1, s_end[2], false)
 	lines[1] = string.sub(lines[1], s_start[3], -1)
-	local selection = string.sub(lines[1], 1, s_end[3] - s_start[3] + 1)
-	local lineObj = {}
-	print(selection)
+	if n_lines == 1 then
+		lines[n_lines] = string.sub(lines[n_lines], 1, s_end[3] - s_start[3] + 1)
+	else
+		lines[n_lines] = string.sub(lines[n_lines], 1, s_end[3])
+	end
+	return table.concat(lines, "\n")
 end
 
 local function runner(input)
@@ -29,11 +32,8 @@ local function runner(input)
 	local bufferContent = vim.api.nvim_buf_get_lines(buf, 0, bufLineCount, false)
 	local whitespaceCounts = getLeadingWhitespacePerLine(bufferContent)
 	local selectionObj = getVisualSelection()
-	print("input: " .. input)
 	if selectionObj ~= nil then
-		local lineNum, selection = table.unpack(selectionObj)
-		print(lineNum)
-		print(selection)
+		print(selectionObj)
 	else
 		return
 	end
