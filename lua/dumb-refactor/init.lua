@@ -36,8 +36,7 @@ local function runner(input)
 	local whitespaceCounts = getLeadingWhitespacePerLine(bufferContent)
 	local selectionObj = getVisualSelection()
 	if selectionObj[1] then
-		local lineNum = selectionObj[2]
-		local selection = selectionObj[3]
+		local _, lineNum, selection = unpack(selectionObj)
 		print(lineNum)
 		print(selection)
 	else
