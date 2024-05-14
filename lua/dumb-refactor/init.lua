@@ -20,9 +20,7 @@ local function getVisualSelection()
 	lines[1] = string.sub(lines[1], s_start[3], -1)
 	local selection = string.sub(lines[1], 1, s_end[3] - s_start[3] + 1)
 	local lineObj = {}
-	table.insert(lineObj, s_start)
-	table.insert(lineObj, selection)
-	return lineObj
+	print(selection)
 end
 
 local function runner(input)
