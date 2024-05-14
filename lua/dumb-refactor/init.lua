@@ -9,17 +9,18 @@ local function getLeadingWhitespacePerLine(content)
 end
 
 local function getSelection(buf, bufferContent)
-	local selection = vim.api.nvim_buf_get_selection(buf, 0)
-	if selection[1] and selection[2] then
-		local selected_lines = {}
-		for i = selection[1], selection[2] do
-			table.insert(selected_lines, bufferContent[i])
-		end
-		local selected_text = table.concat(selected_lines, "\n")
-		return selected_text
-	else
+	local start_pos = vim.fn.getpos("'<")
+	local end_pos = vim.fn.getpos("'>")
+	local spans_multiple_lines = start_pos[1] ~= end_pos[1]
+	if spans_multiple_lines then
+		vim.api.nvim_err_writeln("Error: Selection spans multiple lines.")
 		return nil
 	end
+	local start_line, start_col = table.unpack(start_pos)
+	local _, end_col = table.unpack(end_pos)
+
+	local selection = string.sub(bufferContent[start_line], start_col, end_col)
+	print(selection)
 end
 
 local function runner(input)
@@ -32,6 +33,8 @@ local function runner(input)
 	print(whitespaceCounts)
 	if selection ~= nil then
 		print(selection)
+	else
+		return
 	end
 end
 
