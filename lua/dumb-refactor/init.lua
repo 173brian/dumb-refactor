@@ -8,33 +8,6 @@ local function getLeadingWhitespacePerLine(content)
 	return counts
 end
 
-local function tprint(tbl, indent)
-	if not indent then
-		indent = 0
-	end
-	local toprint = string.rep(" ", indent) .. "{\r\n"
-	indent = indent + 2
-	for k, v in pairs(tbl) do
-		toprint = toprint .. string.rep(" ", indent)
-		if type(k) == "number" then
-			toprint = toprint .. "[" .. k .. "] = "
-		elseif type(k) == "string" then
-			toprint = toprint .. k .. "= "
-		end
-		if type(v) == "number" then
-			toprint = toprint .. v .. ",\r\n"
-		elseif type(v) == "string" then
-			toprint = toprint .. '"' .. v .. '",\r\n'
-		elseif type(v) == "table" then
-			toprint = toprint .. tprint(v, indent + 2) .. ",\r\n"
-		else
-			toprint = toprint .. '"' .. tostring(v) .. '",\r\n'
-		end
-	end
-	toprint = toprint .. string.rep(" ", indent - 2) .. "}"
-	return toprint
-end
-
 local function getSelection(buf, bufferContent)
 	local start_pos = vim.fn.getpos("'<")
 	local end_pos = vim.fn.getpos("'>")
@@ -43,16 +16,33 @@ local function getSelection(buf, bufferContent)
 		vim.api.nvim_err_writeln("Error: Selection spans multiple lines.")
 		return nil
 	end
-	tprint(start_pos, 0)
-	tprint(end_pos, 0)
+	local start_line, start_col = table.unpack(start_pos)
+	local _, end_col = table.unpack(end_pos)
+
+	local selection = string.sub(bufferContent[start_line], start_col, end_col)
+	print(selection)
+end
+
+local function getVisualSelection()
+	local s_start = vim.fn.getpos("'<")
+	local s_end = vim.fn.getpos("'>")
+	local n_lines = math.abs(s_end[2] - s_start[2]) + 1
+	local lines = vim.api.nvim_buf_get_lines(0, s_start[2] - 1, s_end[2], false)
+	lines[1] = string.sub(lines[1], s_start[3], -1)
+	if n_lines == 1 then
+		lines[n_lines] = string.sub(lines[n_lines], 1, s_end[3] - s_start[3] + 1)
+	else
+		lines[n_lines] = string.sub(lines[n_lines], 1, s_end[3])
+	end
+	return table.concat(lines, "\n")
 end
 
 local function runner(input)
-	local buf = vim.api.nvim_get_current_buf()
+	local buf = vim.fn.get
 	local bufLineCount = vim.api.nvim_buf_line_count(buf)
 	local bufferContent = vim.api.nvim_buf_get_lines(buf, 0, bufLineCount, false)
 	local whitespaceCounts = getLeadingWhitespacePerLine(bufferContent)
-	local selection = getSelection(buf, bufferContent)
+	local selection = getVisualSelection()
 	print("input: " .. input)
 	print(whitespaceCounts)
 	if selection ~= nil then
