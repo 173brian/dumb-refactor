@@ -34,28 +34,7 @@ local function runner(input)
 end
 
 local function ui()
-	local width = 40
-	local height = 10
-	local col = math.floor(vim.o.columns / 2) - width / 2
-	local row = math.floor(vim.o.lines / 2) - height / 2
-	local buf_id = vim.api.nvim_create_buf(false, true)
-	local win_id = vim.api.nvim_open_win(buf_id, true, {
-		relative = "editor",
-		width = width,
-		height = height,
-		col = col,
-		row = row,
-		style = "minimal",
-	})
-
-	vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, { "Enter text: " })
-	local input = vim.api.nvim_input()
-
-	-- Check if the Enter key was pressed
-	if #input > 0 and input[1] == "" then
-		-- The Enter key was pressed, close the window
-		vim.api.nvim_close_win(win_id)
-	end
+	local input = vim.fn.input("Refactor to: ") -- TODO: yellow: fancy ui
 	return input
 end
 
