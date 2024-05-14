@@ -16,8 +16,8 @@ local function getSelection(buf, bufferContent)
 		vim.api.nvim_err_writeln("Error: Selection spans multiple lines.")
 		return nil
 	end
-	print("start_pos " .. start_pos)
-	print("end_pos " .. end_pos)
+	print(start_pos)
+	print(end_pos)
 end
 
 local function runner(input)
