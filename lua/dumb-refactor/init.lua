@@ -30,7 +30,9 @@ local function runner(input)
 	local selection = getSelection(buf, bufferContent)
 	print("input: " .. input)
 	print(whitespaceCounts)
-	print(selection)
+	if selection ~= nil then
+		print(selection)
+	end
 end
 
 local function ui()
